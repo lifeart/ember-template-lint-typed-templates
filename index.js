@@ -110,20 +110,22 @@ module.exports = (function() {
             // console.log(process.cwd());
             const pr = await registerProject(connection, path.join(process.cwd()));
             await openFile(connection, path.join(process.cwd(), 'app/components/foo-bar/index.hbs'));
-            console.log('registeredProject', pr);
+            // console.log('registeredProject', pr);
             // console.log(this._filePath);
             const diagnostics = await diagnosticsForFile(connection, path.join(process.cwd(), 'app/components/foo-bar/index.hbs'));
-            console.log('diagnostics', diagnostics);
+            //  console.log(JSON.stringify(diagnostics));
+            // const pl = [{
+            //     "severity":1,
+            //     "range":{"start":{"line":2,"character":6},"end":{"line":2,"character":12}},"message":"Property 'b' does not exist on type 'FooBarComponentTemplate'.","source":"typed-templates"},{"severity":1,"range":{"start":{"line":3,"character":7},"end":{"line":3,"character":9}},"message":"Property 'n' does not exist on type '{}'.","source":"typed-templates"}];
             return {
-                CommentStatement (node) {
-                    if (node.value.trim() === '') {
+                Template () {
+                    diagnostics.forEach((item)=>{
                         this.log({
-                            message: 'comments cannot be empty',
-                            line: node.loc && node.loc.start.line,
-                            column: node.loc && node.loc.start.column,
-                            source: this.sourceForNode(node)
+                            message: item.message,
+                            line: item.range.start.line - 1,
+                            column: item.range.start.character
                         });
-                    }
+                    });
                 }
             };
         }
