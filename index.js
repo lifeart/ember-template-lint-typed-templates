@@ -104,7 +104,7 @@ module.exports = (function() {
     class TypedTemplates extends _emberTemplateLint.Rule {
         async visitor() {
             // console.log('visitor');
-            this._filePath = 'app/components/foo-bar/index.hbs';
+            // this._filePath = 'app/components/foo-bar/index.hbs';
             await initResult;
             // console.log(initResult);
             // console.log(process.cwd());
@@ -118,14 +118,16 @@ module.exports = (function() {
             //     "severity":1,
             //     "range":{"start":{"line":2,"character":6},"end":{"line":2,"character":12}},"message":"Property 'b' does not exist on type 'FooBarComponentTemplate'.","source":"typed-templates"},{"severity":1,"range":{"start":{"line":3,"character":7},"end":{"line":3,"character":9}},"message":"Property 'n' does not exist on type '{}'.","source":"typed-templates"}];
             return {
-                Template () {
-                    diagnostics.forEach((item)=>{
-                        this.log({
-                            message: item.message,
-                            line: item.range.start.line - 1,
-                            column: item.range.start.character
+                Template: {
+                    enter () {
+                        diagnostics.forEach((item)=>{
+                            this.log({
+                                message: item.message,
+                                line: item.range.start.line - 1,
+                                column: item.range.start.character
+                            });
                         });
-                    });
+                    }
                 }
             };
         }

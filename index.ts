@@ -4,15 +4,13 @@ import { Rule } from 'ember-template-lint';
 import * as cp from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
-import { TextDocument  } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
 
 import { createMessageConnection, IPCMessageReader, IPCMessageWriter } from 'vscode-jsonrpc/node';
-import {  DidOpenTextDocumentNotification, ExecuteCommandRequest, DidChangeTextDocumentNotification,   PublishDiagnosticsNotification,
+import {  DidOpenTextDocumentNotification, ExecuteCommandRequest,
   InitializeRequest  } from 'vscode-languageserver-protocol/node';
 
 import type { MessageConnection }  from 'vscode-jsonrpc/node';
-import type { PublishDiagnosticsParams } from 'vscode-languageserver-protocol/node';
 
 let server = null;
 let connection: MessageConnection = null;
@@ -95,7 +93,7 @@ async function diagnosticsForFile(connection, file: string) {
 module.exports = class TypedTemplates extends Rule {
   async visitor() {
     // console.log('visitor');
-    this._filePath = 'app/components/foo-bar/index.hbs';
+    // this._filePath = 'app/components/foo-bar/index.hbs';
     await initResult;
     // console.log(initResult);
     // console.log(process.cwd());
@@ -114,15 +112,17 @@ module.exports = class TypedTemplates extends Rule {
     //     "range":{"start":{"line":2,"character":6},"end":{"line":2,"character":12}},"message":"Property 'b' does not exist on type 'FooBarComponentTemplate'.","source":"typed-templates"},{"severity":1,"range":{"start":{"line":3,"character":7},"end":{"line":3,"character":9}},"message":"Property 'n' does not exist on type '{}'.","source":"typed-templates"}];
 
     return {
-      Template() {
-        diagnostics.forEach((item)=>{
+      Template: {
+        enter() {
+          diagnostics.forEach((item)=>{
             this.log({
               message: item.message,
               line: item.range.start.line - 1,
               column: item.range.start.character,
               // rule: 'typed-templates',
             })
-        });
+          });
+        }
       }
     };
   }
