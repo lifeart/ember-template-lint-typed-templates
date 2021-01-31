@@ -42,10 +42,6 @@ function startServer() {
         cwd: process.cwd()
     });
 }
-// process.on('exit', function () {
-//   connection.dispose();
-//   server.kill();
-// });
 function createConnection(serverProcess) {
     return _node.createMessageConnection(new _node.IPCMessageReader(serverProcess), new _node.IPCMessageWriter(serverProcess));
 }
@@ -66,7 +62,6 @@ function createTextDocument(rawFilePath) {
         filePath = path.join(process.cwd(), filePath);
     }
     const uri = _vscodeUri.URI.file(filePath).toString();
-    // doc.uri = uri;
     return {
         text: fs.readFileSync(filePath, 'utf8'),
         uri: uri
@@ -76,11 +71,9 @@ async function openFile(connection1, filePath) {
     const result = await connection1.sendNotification(_node1.DidOpenTextDocumentNotification.type, {
         textDocument: createTextDocument(filePath)
     });
-    // console.log('result', result);
     return result;
 }
 async function registerProject(connection1, root) {
-    // console.log('path.normalize(root)', path.normalize(root));
     const params = {
         command: 'els.registerProjectPath',
         arguments: [
@@ -97,10 +90,8 @@ async function diagnosticsForFile(connection1, file) {
             document
         ]
     };
-    // console.log(document);
     return connection1.sendRequest(_node1.ExecuteCommandRequest.type, params);
 }
-// console.log('1');
 module.exports = (function() {
     class TypedTemplates extends _emberTemplateLint.Rule {
         async visitor() {
@@ -108,26 +99,14 @@ module.exports = (function() {
             connection = createConnection(server);
             connection.listen();
             let initResult = initServer(connection, process.cwd());
-            console.log('visitor');
-            // this._filePath = 'app/components/foo-bar/index.hbs';
-            // console.log(this);
             await initResult;
-            // console.log(initResult);
-            console.log(process.cwd());
             const pr = await registerProject(connection, path.join(process.cwd()));
             await openFile(connection, this._filePath);
-            // console.log('registeredProject', pr);
-            // console.log(this._filePath);
             const diagnostics = await diagnosticsForFile(connection, this._filePath);
-            //  console.log(JSON.stringify(diagnostics.map(e=>e.range)));
-            // const pl = [{
-            //     "severity":1,
-            //     "range":{"start":{"line":2,"character":6},"end":{"line":2,"character":12}},"message":"Property 'b' does not exist on type 'FooBarComponentTemplate'.","source":"typed-templates"},{"severity":1,"range":{"start":{"line":3,"character":7},"end":{"line":3,"character":9}},"message":"Property 'n' does not exist on type '{}'.","source":"typed-templates"}];
             return {
                 Template: {
                     enter () {
                         diagnostics.forEach((item)=>{
-                            console.log(item.range);
                             this.log({
                                 message: item.message,
                                 line: item.range.start.line + 1,
