@@ -1,11 +1,11 @@
 {
   "name": "ember-template-lint-typed-templates",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Typed templates integration for ember-template-lint",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx swc ./index.ts -o index.js",
+    "build": "npx swc ./index.ts -o index.js && npx swc ./rule.ts -o rule.js",
     "lint:hbs": "ember-template-lint ./app/**/*.hbs",
     "test:mocha": "mocha --recursive"
   },
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/lifeart/ember-template-lint-typed-templates.git"
   },
-  "author": "",
+  "author": "Aleksandr Kanunnikov <lifeart92@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/lifeart/ember-template-lint-typed-templates/issues"
