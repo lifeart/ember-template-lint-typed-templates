@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx swc ./index.ts -o index.js",
-    "lint:hbs": "yarn --cwd ./app ember-template-lint . --config-path ./app/.template-lintrc.js",
+    "lint:hbs": "ember-template-lint ./app/**/*.hbs",
     "test:mocha": "mocha --recursive"
   },
   "repository": {

@@ -42,6 +42,10 @@ function startServer() {
         cwd: process.cwd()
     });
 }
+// process.on('exit', function () {
+//   connection.dispose();
+//   server.kill();
+// });
 function createConnection(serverProcess) {
     return _node.createMessageConnection(new _node.IPCMessageReader(serverProcess), new _node.IPCMessageWriter(serverProcess));
 }
@@ -72,13 +76,9 @@ async function openFile(connection1, filePath) {
     const result = await connection1.sendNotification(_node1.DidOpenTextDocumentNotification.type, {
         textDocument: createTextDocument(filePath)
     });
-    console.log('result', result);
+    // console.log('result', result);
     return result;
 }
-server = startServer();
-connection = createConnection(server);
-connection.listen();
-let initResult = initServer(connection, process.cwd());
 async function registerProject(connection1, root) {
     // console.log('path.normalize(root)', path.normalize(root));
     const params = {
@@ -100,19 +100,25 @@ async function diagnosticsForFile(connection1, file) {
     // console.log(document);
     return connection1.sendRequest(_node1.ExecuteCommandRequest.type, params);
 }
+// console.log('1');
 module.exports = (function() {
     class TypedTemplates extends _emberTemplateLint.Rule {
         async visitor() {
-            // console.log('visitor');
+            server = startServer();
+            connection = createConnection(server);
+            connection.listen();
+            let initResult = initServer(connection, process.cwd());
+            console.log('visitor');
             // this._filePath = 'app/components/foo-bar/index.hbs';
+            // console.log(this);
             await initResult;
             // console.log(initResult);
-            // console.log(process.cwd());
+            console.log(process.cwd());
             const pr = await registerProject(connection, path.join(process.cwd()));
-            await openFile(connection, path.join(process.cwd(), 'app/components/foo-bar/index.hbs'));
+            await openFile(connection, this._filePath);
             // console.log('registeredProject', pr);
             // console.log(this._filePath);
-            const diagnostics = await diagnosticsForFile(connection, path.join(process.cwd(), 'app/components/foo-bar/index.hbs'));
+            const diagnostics = await diagnosticsForFile(connection, this._filePath);
             //  console.log(JSON.stringify(diagnostics));
             // const pl = [{
             //     "severity":1,
@@ -127,6 +133,10 @@ module.exports = (function() {
                                 column: item.range.start.character
                             });
                         });
+                    },
+                    exit () {
+                        connection.dispose();
+                        server.kill();
                     }
                 }
             };

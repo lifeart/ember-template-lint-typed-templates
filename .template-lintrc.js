@@ -5,9 +5,12 @@ module.exports = {
     {
         name: "ember-template-lint-plugin-typed-templates",
         rules: {
-            'typed-templates': require('./../index.js')
+          'typed-templates': require('./index.js')
         }
     }
   ],
-  extends: ['octane']
+  rules: {
+    "typed-templates": "on"
+  },
+  extends: []
 };

@@ -23,6 +23,11 @@ function startServer() {
   });
 }
 
+// process.on('exit', function () {
+//   connection.dispose();
+//   server.kill();
+// });
+
 function createConnection(serverProcess) {
   return createMessageConnection(
     new IPCMessageReader(serverProcess),
@@ -60,14 +65,10 @@ async function openFile(connection: MessageConnection, filePath: string) {
   const result = await connection.sendNotification(DidOpenTextDocumentNotification.type as any, {
     textDocument: createTextDocument(filePath)
   });
-  console.log('result', result);
+  // console.log('result', result);
   return result;
 }
 
-server = startServer();
-connection = createConnection(server);
-connection.listen();
-let initResult = initServer(connection, process.cwd());
 
 
 async function registerProject(connection, root: string) {
@@ -90,21 +91,29 @@ async function diagnosticsForFile(connection, file: string) {
   return connection.sendRequest(ExecuteCommandRequest.type, params);
 }
 
+
+// console.log('1');
 module.exports = class TypedTemplates extends Rule {
   async visitor() {
-    // console.log('visitor');
+    server = startServer();
+    connection = createConnection(server);
+    connection.listen();
+    let initResult = initServer(connection, process.cwd());
+
+    console.log('visitor');
     // this._filePath = 'app/components/foo-bar/index.hbs';
+    // console.log(this);
     await initResult;
     // console.log(initResult);
-    // console.log(process.cwd());
+    console.log(process.cwd());
 
     const pr = await registerProject(connection, path.join(process.cwd()));
-    await openFile(connection, path.join(process.cwd(), 'app/components/foo-bar/index.hbs'));
+    await openFile(connection, this._filePath);
 
     // console.log('registeredProject', pr);
     // console.log(this._filePath);
 
-    const diagnostics = await diagnosticsForFile(connection, path.join(process.cwd(), 'app/components/foo-bar/index.hbs'));
+    const diagnostics = await diagnosticsForFile(connection, this._filePath);
   //  console.log(JSON.stringify(diagnostics));
 
     // const pl = [{
@@ -122,6 +131,10 @@ module.exports = class TypedTemplates extends Rule {
               // rule: 'typed-templates',
             })
           });
+        },
+        exit() {
+          connection.dispose();
+          server.kill();
         }
       }
     };
