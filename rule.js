@@ -134,7 +134,7 @@ module.exports = (function() {
                             connection.dispose();
                             server.kill();
                             watchdog = null;
-                        }, 1000);
+                        }, 5000);
                     }
                 }
             };

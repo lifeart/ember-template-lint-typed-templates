@@ -1,6 +1,6 @@
 {
   "name": "ember-template-lint-typed-templates",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Typed templates integration for ember-template-lint",
   "main": "index.js",
   "scripts": {

@@ -130,7 +130,7 @@ module.exports = class TypedTemplates extends Rule {
             connection.dispose();
             server.kill();
             watchdog = null;
-          }, 1000);
+          }, 5000);
         }
       }
     };
