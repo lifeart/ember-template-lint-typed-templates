@@ -9,9 +9,9 @@ generateRuleTests({
   testMethod: it,
   plugins: [
     {
-      name: "ember-template-lint-plugin-typed-templates",
+      name: "ember-template-lint-typed-templates",
       rules: {
-        'typed-templates': require('./../../index.js')
+        'typed-templates': require('./../../rule.js')
       }
     }
   ],
