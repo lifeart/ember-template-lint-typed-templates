@@ -1,0 +1,1 @@
+const { plugin } = require('ember-template-lint');
