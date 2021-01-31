@@ -1,5 +1,12 @@
 # ember-template-lint-typed-templates 🌬
 
+
+## Require
+
+```
+ember-template-lint >= 3.0
+```
+
 ## Install
 
 ```sh
