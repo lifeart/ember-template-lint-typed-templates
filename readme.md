@@ -3,6 +3,7 @@
 ## Install
 
 ```sh
+yarn add -D els-addon-typed-templates
 yarn add -D ember-template-lint-typed-templates
 ```
 
