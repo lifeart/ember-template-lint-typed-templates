@@ -27,7 +27,7 @@
     "vscode-uri": "^3.0.2"
   },
   "devDependencies": {
-    "ember-template-lint-typed-templates": "0.1.0",
+    "ember-template-lint-typed-templates": "0.1.6",
     "ember-template-lint": "3.0.0-beta.3",
     "mocha": "^8.2.1",
     "@glimmer/component": "2.0.0-beta.12",

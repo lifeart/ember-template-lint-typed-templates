@@ -2660,10 +2660,10 @@ ember-rfc176-data@^0.3.16:
   resolved "https://registry.yarnpkg.com/ember-rfc176-data/-/ember-rfc176-data-0.3.16.tgz#2ace0ac9cf9016d493a74a1d931643a308679803"
   integrity sha512-IYAzffS90r2ybAcx8c2qprYfkxa70G+/UPkxMN1hw55DU5S2aLOX6v3umKDZItoRhrvZMCnzwsdfKSrKdC9Wbg==
 
-ember-template-lint-typed-templates@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/ember-template-lint-typed-templates/-/ember-template-lint-typed-templates-0.1.0.tgz#5df490b7d06e84a7c8c6fc09f3925d8698bb6152"
-  integrity sha512-8s3PvUzjnwQwz3LHsR5M0ddHhYntUW5uU0S3pOKC0gf3JzPM2ELxFrG/0n1BdGLboZL5HUFRJjtD897UzhTwJg==
+ember-template-lint-typed-templates@0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/ember-template-lint-typed-templates/-/ember-template-lint-typed-templates-0.1.6.tgz#0ef9af61bbc25586e5de70d7badb13ce1f28391f"
+  integrity sha512-Tqwaps9NN5lLBP3nBM1E0xUXZJd0Xi+6+GnznjT71TNF4fR7L+alpvnnbtcTBhde8id2JZd0J+CBLWXgPiciAA==
   dependencies:
     "@lifeart/ember-language-server" "^1.0.5"
     vscode-jsonrpc "^6.0.0"
