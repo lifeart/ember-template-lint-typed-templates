@@ -7,7 +7,6 @@ var _emberTemplateLint = require("ember-template-lint");
 var cp = _interopRequireWildcard(require("child_process"));
 var path = _interopRequireWildcard(require("path"));
 var fs = _interopRequireWildcard(require("fs"));
-var _vscodeLanguageserverTextdocument = require("vscode-languageserver-textdocument");
 var _vscodeUri = require("vscode-uri");
 var _node = require("vscode-jsonrpc/node");
 var _node1 = require("vscode-languageserver-protocol/node");
@@ -63,7 +62,11 @@ function createTextDocument(rawFilePath) {
         filePath = path.join(process.cwd(), filePath);
     }
     const uri = _vscodeUri.URI.file(filePath).toString();
-    return _vscodeLanguageserverTextdocument.TextDocument.create(uri, '', 1, fs.readFileSync(filePath, 'utf8'));
+    // doc.uri = uri;
+    return {
+        text: fs.readFileSync(filePath, 'utf8'),
+        uri: uri
+    };
 }
 async function openFile(connection1, filePath) {
     const result = await connection1.sendNotification(_node1.DidOpenTextDocumentNotification.type, {
@@ -77,7 +80,7 @@ connection = createConnection(server);
 connection.listen();
 let initResult = initServer(connection, process.cwd());
 async function registerProject(connection1, root) {
-    console.log('path.normalize(root)', path.normalize(root));
+    // console.log('path.normalize(root)', path.normalize(root));
     const params = {
         command: 'els.registerProjectPath',
         arguments: [
@@ -86,30 +89,31 @@ async function registerProject(connection1, root) {
     };
     return connection1.sendRequest(_node1.ExecuteCommandRequest.type, params);
 }
+async function diagnosticsForFile(connection1, file) {
+    const document = createTextDocument(file);
+    const params = {
+        command: 'els.provideDiagnostics',
+        arguments: [
+            document
+        ]
+    };
+    // console.log(document);
+    return connection1.sendRequest(_node1.ExecuteCommandRequest.type, params);
+}
 module.exports = (function() {
     class TypedTemplates extends _emberTemplateLint.Rule {
         async visitor() {
-            console.log('visitor');
+            // console.log('visitor');
             this._filePath = 'app/components/foo-bar/index.hbs';
             await initResult;
             // console.log(initResult);
             // console.log(process.cwd());
             const pr = await registerProject(connection, path.join(process.cwd()));
+            await openFile(connection, path.join(process.cwd(), 'app/components/foo-bar/index.hbs'));
             console.log('registeredProject', pr);
             // console.log(this._filePath);
-            await openFile(connection, this._filePath);
-            connection.sendRequest(_node1.DidChangeTextDocumentNotification.type, {
-                textDocument: createTextDocument(this._filePath)
-            });
-            let resolveP;
-            let p = new Promise((resolve)=>{
-                resolveP = resolve;
-            });
-            connection.onNotification(_node1.PublishDiagnosticsNotification.type, (params)=>{
-                console.log('d', params.diagnostics);
-                resolveP(params.diagnostics);
-            });
-            await p;
+            const diagnostics = await diagnosticsForFile(connection, path.join(process.cwd(), 'app/components/foo-bar/index.hbs'));
+            console.log('diagnostics', diagnostics);
             return {
                 CommentStatement (node) {
                     if (node.value.trim() === '') {

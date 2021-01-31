@@ -20,18 +20,19 @@
   },
   "homepage": "https://github.com/lifeart/ember-template-lint-typed-templates#readme",
   "dependencies": {
-    "@lifeart/ember-language-server": "^1.0.1",
-    "ember-template-lint": "3.0.0-beta.3",
-    "mocha": "^8.2.1",
+    "@lifeart/ember-language-server": "^1.0.5",
     "vscode-jsonrpc": "^6.0.0",
     "vscode-languageserver-protocol": "^3.16.0",
     "vscode-languageserver-textdocument": "^1.0.1",
     "vscode-uri": "^3.0.2"
   },
   "devDependencies": {
-    "@glimmer/component": "^1.0.3",
+    "ember-template-lint": "3.0.0-beta.3",
+    "mocha": "^8.2.1",
+    "@glimmer/component": "2.0.0-beta.12",
     "@swc/cli": "^0.1.32",
     "@swc/core": "^1.2.45",
-    "@types/node": "^14.14.22"
+    "@types/node": "^14.14.22",
+    "els-addon-typed-templates": "^4.0.0"
   }
 }

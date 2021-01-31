@@ -51,7 +51,11 @@ function createTextDocument(rawFilePath) {
     filePath = path.join(process.cwd(), filePath);
   }
   const uri = URI.file(filePath).toString();
-  return TextDocument.create(uri, '', 1, fs.readFileSync(filePath, 'utf8'));
+  // doc.uri = uri;
+  return {
+    text: fs.readFileSync(filePath, 'utf8'),
+    uri: uri
+  }
 }
 
 async function openFile(connection: MessageConnection, filePath: string) {
@@ -69,7 +73,7 @@ let initResult = initServer(connection, process.cwd());
 
 
 async function registerProject(connection, root: string) {
-  console.log('path.normalize(root)', path.normalize(root));
+  // console.log('path.normalize(root)', path.normalize(root));
   const params = {
     command: 'els.registerProjectPath',
     arguments: [path.normalize(root)],
@@ -78,32 +82,34 @@ async function registerProject(connection, root: string) {
   return connection.sendRequest(ExecuteCommandRequest.type, params);
 }
 
+async function diagnosticsForFile(connection, file: string) {
+  const document = createTextDocument(file);
+  const params = {
+    command: 'els.provideDiagnostics',
+    arguments: [ document ]
+  }
+  // console.log(document);
+  return connection.sendRequest(ExecuteCommandRequest.type, params);
+}
+
 module.exports = class TypedTemplates extends Rule {
   async visitor() {
-    console.log('visitor');
+    // console.log('visitor');
     this._filePath = 'app/components/foo-bar/index.hbs';
     await initResult;
     // console.log(initResult);
     // console.log(process.cwd());
+
     const pr = await registerProject(connection, path.join(process.cwd()));
+    await openFile(connection, path.join(process.cwd(), 'app/components/foo-bar/index.hbs'));
+
     console.log('registeredProject', pr);
     // console.log(this._filePath);
-    await openFile(connection, this._filePath);
-    connection.sendRequest(DidChangeTextDocumentNotification.type as any, {
-      textDocument: createTextDocument(this._filePath)
-    });
-    let resolveP: any;
 
-    let p = new Promise((resolve)=>{
-      resolveP = resolve;
-    });
+    const diagnostics = await diagnosticsForFile(connection, path.join(process.cwd(), 'app/components/foo-bar/index.hbs'));
+   
 
-    connection.onNotification(PublishDiagnosticsNotification.type, (params: PublishDiagnosticsParams) => {
-      console.log('d', params.diagnostics);
-      resolveP(params.diagnostics);
-    });
-
-    await p;
+    console.log('diagnostics', diagnostics);
 
     return {
       CommentStatement(node) {
