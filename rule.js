@@ -106,7 +106,6 @@ module.exports = (function() {
                 await initResult;
                 await registerProject(connection, path.join(process.cwd()));
             }
-            await openFile(connection, this._filePath);
             const diagnostics = await diagnosticsForFile(connection, this._filePath);
             return {
                 Template: {
@@ -134,7 +133,7 @@ module.exports = (function() {
                             connection.dispose();
                             server.kill();
                             watchdog = null;
-                        }, 5000);
+                        }, 3000);
                     }
                 }
             };

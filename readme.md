@@ -5,6 +5,7 @@
 
 ```
 ember-template-lint >= 3.0
+els-addon-typed-templates >= 4.0.2
 ```
 
 ## Install

@@ -99,7 +99,6 @@ module.exports = class TypedTemplates extends Rule {
       await registerProject(connection, path.join(process.cwd()));
     }
   
-    await openFile(connection, this._filePath);
     const diagnostics = await diagnosticsForFile(connection, this._filePath);
 
     return {
@@ -130,7 +129,7 @@ module.exports = class TypedTemplates extends Rule {
             connection.dispose();
             server.kill();
             watchdog = null;
-          }, 5000);
+          }, 3000);
         }
       }
     };
