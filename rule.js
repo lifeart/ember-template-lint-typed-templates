@@ -92,16 +92,17 @@ async function diagnosticsForFile(connection1, file) {
     };
     return connection1.sendRequest(_node1.ExecuteCommandRequest.type, params);
 }
-server = startServer();
-connection = createConnection(server);
-connection.listen();
-let initResult = initServer(connection, process.cwd());
 let watchdog = null;
+let initResult = null;
 module.exports = (function() {
     class TypedTemplates extends _emberTemplateLint.Rule {
         async visitor() {
             clearTimeout(watchdog);
-            if (!watchdog) {
+            if (watchdog === null) {
+                server = startServer();
+                connection = createConnection(server);
+                connection.listen();
+                initResult = initServer(connection, process.cwd());
                 await initResult;
                 await registerProject(connection, path.join(process.cwd()));
             }
@@ -132,6 +133,7 @@ module.exports = (function() {
                         watchdog = setTimeout(()=>{
                             connection.dispose();
                             server.kill();
+                            watchdog = null;
                         }, 1000);
                     }
                 }

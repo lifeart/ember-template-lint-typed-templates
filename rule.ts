@@ -82,17 +82,19 @@ async function diagnosticsForFile(connection, file: string) {
   return connection.sendRequest(ExecuteCommandRequest.type, params);
 }
 
-server = startServer();
-connection = createConnection(server);
-connection.listen();
-let initResult = initServer(connection, process.cwd());
+
 let watchdog = null;
+let initResult  = null;
 
 module.exports = class TypedTemplates extends Rule {
   async visitor() {
     clearTimeout(watchdog);
     
-    if (!watchdog) {
+    if (watchdog === null) {
+      server = startServer();
+      connection = createConnection(server);
+      connection.listen();
+      initResult = initServer(connection, process.cwd());
       await initResult;
       await registerProject(connection, path.join(process.cwd()));
     }
@@ -127,6 +129,7 @@ module.exports = class TypedTemplates extends Rule {
           watchdog = setTimeout(()=> {
             connection.dispose();
             server.kill();
+            watchdog = null;
           }, 1000);
         }
       }
