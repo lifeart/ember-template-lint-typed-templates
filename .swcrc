@@ -1,0 +1,22 @@
+{
+    "env": {
+        "targets": {
+          "node": "10"
+        }
+    },
+    "module": {
+        "type": "commonjs",
+        "strict": false,
+        "strictMode": true,
+        "lazy": false,
+        "noInterop": false
+    },
+    "jsc": {
+      "parser": {
+        "syntax": "typescript",
+        "tsx": false,
+        "decorators": false,
+        "dynamicImport": false
+      }
+    }
+  }
