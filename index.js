@@ -119,7 +119,7 @@ module.exports = (function() {
             // console.log('registeredProject', pr);
             // console.log(this._filePath);
             const diagnostics = await diagnosticsForFile(connection, this._filePath);
-            //  console.log(JSON.stringify(diagnostics));
+            //  console.log(JSON.stringify(diagnostics.map(e=>e.range)));
             // const pl = [{
             //     "severity":1,
             //     "range":{"start":{"line":2,"character":6},"end":{"line":2,"character":12}},"message":"Property 'b' does not exist on type 'FooBarComponentTemplate'.","source":"typed-templates"},{"severity":1,"range":{"start":{"line":3,"character":7},"end":{"line":3,"character":9}},"message":"Property 'n' does not exist on type '{}'.","source":"typed-templates"}];
@@ -127,10 +127,21 @@ module.exports = (function() {
                 Template: {
                     enter () {
                         diagnostics.forEach((item)=>{
+                            console.log(item.range);
                             this.log({
                                 message: item.message,
-                                line: item.range.start.line - 1,
-                                column: item.range.start.character
+                                line: item.range.start.line + 1,
+                                column: item.range.start.character,
+                                source: this.sourceForLoc({
+                                    start: {
+                                        line: item.range.start.line + 1,
+                                        column: item.range.start.character
+                                    },
+                                    end: {
+                                        line: item.range.end.line + 1,
+                                        column: item.range.end.character
+                                    }
+                                })
                             });
                         });
                     },

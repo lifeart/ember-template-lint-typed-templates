@@ -114,7 +114,7 @@ module.exports = class TypedTemplates extends Rule {
     // console.log(this._filePath);
 
     const diagnostics = await diagnosticsForFile(connection, this._filePath);
-  //  console.log(JSON.stringify(diagnostics));
+  //  console.log(JSON.stringify(diagnostics.map(e=>e.range)));
 
     // const pl = [{
     //     "severity":1,
@@ -124,10 +124,21 @@ module.exports = class TypedTemplates extends Rule {
       Template: {
         enter() {
           diagnostics.forEach((item)=>{
+            console.log(item.range);
             this.log({
               message: item.message,
-              line: item.range.start.line - 1,
+              line: item.range.start.line + 1,
               column: item.range.start.character,
+              source: this.sourceForLoc({
+                start: {
+                  line: item.range.start.line + 1,
+                  column: item.range.start.character
+                },
+                end: {
+                  line: item.range.end.line + 1,
+                  column: item.range.end.character
+                }
+              })
               // rule: 'typed-templates',
             })
           });
