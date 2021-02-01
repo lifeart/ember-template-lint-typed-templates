@@ -1,7 +1,7 @@
 # ember-template-lint-typed-templates 🌬
 
 
-Based on [els-addon-typed-templates](https://github.com/lifeart/els-addon-typed-templates) by [lifeart](https://github.com/lifeart/)
+Based on [els-addon-typed-templates](https://github.com/lifeart/els-addon-typed-templates) and [@lifeart/ember-language-server](https://github.com/lifeart/ember-language-server)
 
 ## Require
 
